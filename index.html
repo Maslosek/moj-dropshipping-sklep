@@ -1,1 +1,840 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DropShop Pro - Automatyczny Dropshipping</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .logo {
+            text-align: center;
+            color: #4a5568;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .tagline {
+            text-align: center;
+            color: #718096;
+            font-size: 1.2em;
+            margin-bottom: 20px;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .tab-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            transform: scale(1.05);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .admin-panel {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .control-panel {
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-panel h3 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 600;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #e53e3e, #c53030);
+        }
+
+        .status-panel {
+            background: linear-gradient(135deg, #f0fff4, #c6f6d5);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .status-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-value {
+            font-weight: bold;
+            color: #38a169;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+        }
+
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f7fafc, #edf2f7);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            font-size: 3em;
+            color: #a0aec0;
+        }
+
+        .product-title {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .original-price {
+            color: #e53e3e;
+            text-decoration: line-through;
+            font-size: 0.9em;
+        }
+
+        .selling-price {
+            color: #38a169;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .profit-margin {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .product-stock {
+            color: #718096;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 14px;
+            flex: 1;
+        }
+
+        .storefront {
+            background: linear-gradient(135deg, #f7fafc, #ffffff);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .store-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .store-title {
+            font-size: 2.5em;
+            color: #2d3748;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .store-subtitle {
+            color: #718096;
+            font-size: 1.2em;
+        }
+
+        .customer-product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .customer-product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .customer-product-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4em;
+        }
+
+        .customer-product-info {
+            padding: 25px;
+        }
+
+        .customer-product-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .customer-price {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #38a169;
+            margin-bottom: 15px;
+        }
+
+        .customer-stock {
+            color: #718096;
+            margin-bottom: 20px;
+        }
+
+        .buy-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .logs-panel {
+            max-height: 400px;
+            overflow-y: auto;
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+            padding: 5px;
+            border-left: 3px solid #48bb78;
+            padding-left: 10px;
+        }
+
+        .log-error {
+            border-left-color: #e53e3e;
+            color: #fed7d7;
+        }
+
+        .log-warning {
+            border-left-color: #ed8936;
+            color: #feebc8;
+        }
+
+        .sync-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #48bb78;
+            margin-right: 8px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .sync-indicator.syncing {
+            background: #ed8936;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .admin-panel {
+                grid-template-columns: 1fr;
+            }
+            
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">🚀 DropShop Pro</h1>
+            <p class="tagline">Automatyczny system dropshippingu z synchronizacją AliExpress</p>
+            
+            <div class="nav-tabs">
+                <button class="tab-btn active" onclick="switchTab('admin')">🎛️ Panel Admina</button>
+                <button class="tab-btn" onclick="switchTab('products')">📦 Produkty</button>
+                <button class="tab-btn" onclick="switchTab('store')">🏪 Sklep</button>
+                <button class="tab-btn" onclick="switchTab('logs')">📊 Logi</button>
+            </div>
+        </div>
+
+        <!-- Panel Administracyjny -->
+        <div id="admin-tab" class="tab-content active">
+            <div class="admin-panel">
+                <div class="control-panel">
+                    <h3>⚙️ Ustawienia Synchronizacji</h3>
+                    
+                    <div class="form-group">
+                        <label>URL AliExpress API:</label>
+                        <input type="text" id="api-url" placeholder="https://api.aliexpress.com/v1/" value="https://api.aliexpress.com/v1/">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Klucz API:</label>
+                        <input type="password" id="api-key" placeholder="Wprowadź klucz API">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Marża zysku (%):</label>
+                        <input type="number" id="profit-margin" value="25" min="1" max="500">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Częstotliwość synchronizacji:</label>
+                        <select id="sync-frequency">
+                            <option value="5">Co 5 minut</option>
+                            <option value="15" selected>Co 15 minut</option>
+                            <option value="30">Co 30 minut</option>
+                            <option value="60">Co godzinę</option>
+                        </select>
+                    </div>
+                    
+                    <button class="btn" onclick="startAutoSync()">🔄 Rozpocznij Auto-Sync</button>
+                    <button class="btn" onclick="stopAutoSync()">⏹️ Zatrzymaj Sync</button>
+                    <button class="btn" onclick="manualSync()">⚡ Synchronizuj Teraz</button>
+                    
+                    <h3 style="margin-top: 30px;">➕ Dodaj Produkt</h3>
+                    
+                    <div class="form-group">
+                        <label>URL produktu AliExpress:</label>
+                        <input type="text" id="product-url" placeholder="https://www.aliexpress.com/item/...">
+                    </div>
+                    
+                    <button class="btn" onclick="addProduct()">📦 Dodaj Produkt</button>
+                </div>
+                
+                <div class="status-panel">
+                    <h3>📈 Status Systemu</h3>
+                    
+                    <div class="status-item">
+                        <span>Status synchronizacji:</span>
+                        <span class="status-value" id="sync-status">
+                            <span class="sync-indicator"></span>Gotowy
+                        </span>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>Liczba produktów:</span>
+                        <span class="status-value" id="product-count">3</span>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>Ostatnia synchronizacja:</span>
+                        <span class="status-value" id="last-sync">Nigdy</span>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>Średnia marża:</span>
+                        <span class="status-value" id="avg-margin">25%</span>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>Aktywne produkty:</span>
+                        <span class="status-value" id="active-products">3</span>
+                    </div>
+                    
+                    <div class="status-item">
+                        <span>Łączna wartość:</span>
+                        <span class="status-value" id="total-value">$847.50</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lista Produktów -->
+        <div id="products-tab" class="tab-content">
+            <h2 style="color: #2d3748; margin-bottom: 30px;">📦 Zarządzanie Produktami</h2>
+            
+            <div class="product-grid" id="products-grid">
+                <!-- Produkty będą dodawane dynamicznie -->
+            </div>
+        </div>
+
+        <!-- Strona Sklepu -->
+        <div id="store-tab" class="tab-content">
+            <div class="storefront">
+                <div class="store-header">
+                    <h1 class="store-title">TechShop Pro</h1>
+                    <p class="store-subtitle">Najlepsze produkty technologiczne w najlepszych cenach</p>
+                </div>
+                
+                <div class="product-grid" id="customer-products">
+                    <!-- Produkty dla klientów -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Logi -->
+        <div id="logs-tab" class="tab-content">
+            <h2 style="color: #2d3748; margin-bottom: 20px;">📊 Logi Systemu</h2>
+            <div class="logs-panel" id="logs-container">
+                <!-- Logi będą dodawane automatycznie -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Symulowane dane produktów
+        let products = [
+            {
+                id: 1,
+                title: "Smartwatch Pro X1 - Wodoodporny zegarek sportowy",
+                originalPrice: 89.99,
+                stock: 50,
+                aliexpressUrl: "https://aliexpress.com/item/smartwatch-pro-x1",
+                image: "⌚",
+                lastSync: new Date(),
+                active: true
+            },
+            {
+                id: 2,
+                title: "Słuchawki Bluetooth 5.0 - Bezprzewodowe z redukcją szumów",
+                originalPrice: 45.50,
+                stock: 120,
+                aliexpressUrl: "https://aliexpress.com/item/bluetooth-headphones",
+                image: "🎧",
+                lastSync: new Date(),
+                active: true
+            },
+            {
+                id: 3,
+                title: "Powerbank 20000mAh - Szybkie ładowanie PD 18W",
+                originalPrice: 32.99,
+                stock: 75,
+                aliexpressUrl: "https://aliexpress.com/item/powerbank-20000mah",
+                image: "🔋",
+                lastSync: new Date(),
+                active: true
+            }
+        ];
+
+        let syncInterval;
+        let isAutoSyncActive = false;
+
+        // Funkcje zarządzania zakładkami
+        function switchTab(tabName) {
+            // Ukryj wszystkie zakładki
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Usuń aktywną klasę z przycisków
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Pokaż wybraną zakładkę
+            document.getElementById(tabName + '-tab').classList.add('active');
+            
+            // Dodaj aktywną klasę do przycisku
+            event.target.classList.add('active');
+            
+            // Odśwież zawartość jeśli potrzeba
+            if (tabName === 'products') {
+                renderProducts();
+            } else if (tabName === 'store') {
+                renderCustomerProducts();
+            }
+        }
+
+        // Funkcje synchronizacji
+        function startAutoSync() {
+            if (isAutoSyncActive) {
+                addLog('warning', 'Auto-synchronizacja już jest aktywna');
+                return;
+            }
+            
+            const frequency = parseInt(document.getElementById('sync-frequency').value);
+            isAutoSyncActive = true;
+            
+            updateSyncStatus('syncing', 'Auto-sync aktywny');
+            addLog('info', `Auto-synchronizacja rozpoczęta (co ${frequency} minut)`);
+            
+            syncInterval = setInterval(() => {
+                performSync();
+            }, frequency * 60 * 1000);
+        }
+
+        function stopAutoSync() {
+            if (!isAutoSyncActive) {
+                addLog('warning', 'Auto-synchronizacja nie jest aktywna');
+                return;
+            }
+            
+            clearInterval(syncInterval);
+            isAutoSyncActive = false;
+            
+            updateSyncStatus('ready', 'Gotowy');
+            addLog('info', 'Auto-synchronizacja zatrzymana');
+        }
+
+        function manualSync() {
+            updateSyncStatus('syncing', 'Synchronizacja...');
+            addLog('info', 'Rozpoczęto ręczną synchronizację');
+            
+            setTimeout(() => {
+                performSync();
+            }, 1000);
+        }
+
+        function performSync() {
+            products.forEach(product => {
+                // Symulacja zmiany cen i stanów magazynowych
+                const priceChange = (Math.random() - 0.5) * 10;
+                const stockChange = Math.floor((Math.random() - 0.5) * 20);
+                
+                product.originalPrice = Math.max(10, product.originalPrice + priceChange);
+                product.stock = Math.max(0, product.stock + stockChange);
+                product.lastSync = new Date();
+                
+                addLog('info', `Zaktualizowano: ${product.title.substring(0, 30)}... - Cena: $${product.originalPrice.toFixed(2)}, Stan: ${product.stock}`);
+            });
+            
+            updateSyncStatus('ready', 'Gotowy');
+            updateLastSync();
+            renderProducts();
+            renderCustomerProducts();
+            updateStats();
+            
+            addLog('success', 'Synchronizacja zakończona pomyślnie');
+        }
+
+        function addProduct() {
+            const url = document.getElementById('product-url').value;
+            
+            if (!url || !url.includes('aliexpress.com')) {
+                addLog('error', 'Nieprawidłowy URL produktu AliExpress');
+                return;
+            }
+            
+            // Symulacja dodania produktu
+            const newProduct = {
+                id: products.length + 1,
+                title: "Nowy Produkt - " + Math.random().toString(36).substr(2, 9),
+                originalPrice: Math.random() * 100 + 20,
+                stock: Math.floor(Math.random() * 200) + 10,
+                aliexpressUrl: url,
+                image: "📱",
+                lastSync: new Date(),
+                active: true
+            };
+            
+            products.push(newProduct);
+            document.getElementById('product-url').value = '';
+            
+            addLog('success', `Dodano nowy produkt: ${newProduct.title}`);
+            updateStats();
+            renderProducts();
+        }
+
+        function removeProduct(id) {
+            const index = products.findIndex(p => p.id === id);
+            if (index > -1) {
+                const product = products[index];
+                products.splice(index, 1);
+                addLog('warning', `Usunięto produkt: ${product.title}`);
+                updateStats();
+                renderProducts();
+            }
+        }
+
+        function toggleProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.active = !product.active;
+                addLog('info', `${product.active ? 'Aktywowano' : 'Deaktywowano'} produkt: ${product.title}`);
+                updateStats();
+                renderProducts();
+                renderCustomerProducts();
+            }
+        }
+
+        // Funkcje renderowania
+        function renderProducts() {
+            const grid = document.getElementById('products-grid');
+            grid.innerHTML = '';
+            
+            products.forEach(product => {
+                const profitMargin = parseInt(document.getElementById('profit-margin').value) || 25;
+                const sellingPrice = product.originalPrice * (1 + profitMargin / 100);
+                
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="product-image">${product.image}</div>
+                    <div class="product-title">${product.title}</div>
+                    <div class="product-price">
+                        <div>
+                            <div class="original-price">AliExpress: $${product.originalPrice.toFixed(2)}</div>
+                            <div class="selling-price">Sprzedaż: $${sellingPrice.toFixed(2)}</div>
+                        </div>
+                        <div class="profit-margin">+${profitMargin}%</div>
+                    </div>
+                    <div class="product-stock">Stan magazynowy: ${product.stock} szt.</div>
+                    <div class="product-actions">
+                        <button class="btn btn-small" onclick="toggleProduct(${product.id})">
+                            ${product.active ? '❌ Deaktywuj' : '✅ Aktywuj'}
+                        </button>
+                        <button class="btn btn-small btn-danger" onclick="removeProduct(${product.id})">
+                            🗑️ Usuń
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderCustomerProducts() {
+            const grid = document.getElementById('customer-products');
+            grid.innerHTML = '';
+            
+            const profitMargin = parseInt(document.getElementById('profit-margin').value) || 25;
+            
+            products.filter(p => p.active && p.stock > 0).forEach(product => {
+                const sellingPrice = product.originalPrice * (1 + profitMargin / 100);
+                
+                const card = document.createElement('div');
+                card.className = 'customer-product-card';
+                card.innerHTML = `
+                    <div class="customer-product-image">${product.image}</div>
+                    <div class="customer-product-info">
+                        <div class="customer-product-title">${product.title}</div>
+                        <div class="customer-price">$${sellingPrice.toFixed(2)}</div>
+                        <div class="customer-stock">✅ Dostępne: ${product.stock} sztuk</div>
+                        <button class="buy-btn" onclick="simulatePurchase('${product.title}', ${sellingPrice.toFixed(2)})">
+                            🛒 Kup Teraz
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function simulatePurchase(title, price) {
+            addLog('success', `Symulacja zakupu: ${title} za $${price}`);
+            alert(`🎉 Zakup symulowany!\n\nProdukt: ${title}\nCena: $${price}\n\nW prawdziwym systemie tutaj byłaby integracja z bramką płatności.`);
+        }
+
+        // Funkcje pomocnicze
+        function updateSyncStatus(type, message) {
+            const statusElement = document.getElementById('sync-status');
+            const indicator = statusElement.querySelector('.sync-indicator');
+            
+            indicator.className = `sync-indicator ${type === 'syncing' ? 'syncing' : ''}`;
+            statusElement.innerHTML = `<span class="sync-indicator ${type === 'syncing' ? 'syncing' : ''}"></span>${message}`;
+        }
+
+        function updateLastSync() {
+            document.getElementById('last-sync').textContent = new Date().toLocaleString('pl-PL');
+        }
+
+        function updateStats() {
+            document.getElementById('product-count').textContent = products.length;
+            document.getElementById('active-products').textContent = products.filter(p => p.active).length;
+            
+            const profitMargin = parseInt(
